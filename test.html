@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Weather </title>
+    <!-- <link href="style.css" rel="stylesheet"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" 
+    crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" 
+    crossorigin="anonymous"></script>
+    <script>
+
+    
+        let city;
+        async function clickHandler(){            
+            // alert('clicked');
+            // alert(document.getElementById('weather').innerText);
+
+            
+            city = document.getElementById('city').value;
+
+            // Fetch the weather details
+            let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=93f26e3c57081a6210de53b8dcfdfea4`;
+            // let response = await fetch(url);
+            // console.log(response.json());
+
+
+            await fetch(url)
+            .then( (weather) => {return weather.json()})
+            .then(displayData);        
+
+
+            // print to console
+            // get needed info and display it in div
+        }
+
+
+        function displayData(data){
+            
+            const hum = data.main.humidity;
+            const pres = data.main.pressure;
+            const umbrellaRecommendation = getUmbrellaRecommendation(hum, pres);
+            
+            
+            
+            console.log(data);
+            background();
+
+            console.log(data.main.temp_min)
+            let imgurl = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+
+            document.getElementById('weather').innerHTML =
+            ` <h3> ${city} </h3> <img style="white"src=${imgurl} alt='weather'/> <br>
+            Coordinates: Lat: ${data.coord.lat} <br>Long: ${data.coord.lon}<br>
+            Minimum Temp: ${Math.floor(data.main.temp_min-273.15)*9/5+32}*F
+            <br>
+            Maximum Temp: ${Math.floor(data.main.temp_max-273.15)*9/5+32}*F
+            <br>
+            Feels Like: ${Math.floor(data.main.feels_like-273.15)*9/5+32}*F
+            <br>
+            Humidity ${data.main.humidity}
+            <br>
+            Wind Speed: ${(data.wind.speed)*0.621371} mph 
+            <br>
+            Weather:  ${data.weather[0].main} (${data.weather[0].description})
+            <br> 
+        
+            Should you bring an umbrella?: ${umbrellaRecommendation}
+        `;
+            console.log(imgurl)      
+
+        }
+
+function background() {
+//   change color of backgroun
+            document.getElementById("weather").style.backgroundColor= "white";
+            document .getElementById("weather").style.borderStyle="round";
+} 
+
+
+function getUmbrellaRecommendation(humidity, pressure) {
+    return (humidity >= 60 && pressure >= 1000) ? ' A Decent Chance' :
+        (humidity >= 50 && pressure >= 800) ? 'half a Chance' :
+        'Probably Not';
+}
+
+
+
+
+
+    </script>
+</head>
+<body>
+        <style>
+            #intro {
+                background-image: url("DALL·E\ 2023-09-08\ 15.31.46\ -\ ambient\ blue\ background\ with\ streak\ of\ white\ and\ yellow\ throughout\ \ impressionistic.png");
+                height: 100vh;
+            }
+
+            @media (min-width: 992px) {
+                #intro {
+                margin-top: -58.59px;
+                }
+            }
+
+            </style>
+
+            
+    <div id="intro" class="bg-image shadow-2-strong py-5">
+        <div class="mask" style="background-url:url(DALL·E\ 2023-09-08\ 15.31.46\ -\ ambient\ blue\ background\ with\ streak\ of\ white\ and\ yellow\ throughout\ \ impressionistic.png);">
+            <div class="container d-flex align-items-center justify-content-center text-center h-100">
+                <div class="text-black">
+                    <h1 class="mb-3">Enter your City or Zip Code</h1>
+                    <h5 class="mb-4">Make Sure you have correct spelling!</h5>
+
+
+                    <div class="flex-row d-flex justify-content-center ">
+                        <div class="col-md-auto px-3 py-3">
+                            <input type="text" id="city">
+                        </div>
+                    </div>
+
+                <div class="flex-row d-flex pt-3 justify-content-center">
+                    <div class="col-md-auto px-3 py-2">
+                        <button onclick="clickHandler()"> Click for weather details </button>
+                    </div>
+                </div>
+
+
+                    <div class="flex-row d-flex pt-3 justify-content-center">
+                        <div id="weather" class="col-md-auto px-3 py-2 justify-content-center " style="250px"> 
+                            <h4> Your Forecast Will Appear Hear</h4>
+                        </div>
+                    </div>
+                </div> 
+            </div> 
+            </div>  
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
